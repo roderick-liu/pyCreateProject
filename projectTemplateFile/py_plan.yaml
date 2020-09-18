@@ -1,0 +1,29 @@
+# create file array
+dirArray:
+  - contributed
+  - data
+  - module
+  - src
+  - doc
+  - log
+
+childArray:
+  - test
+  - tmp
+  - module
+
+fileArray:
+  - __init__.py
+  - LICENSE.md
+  - README.md
+  - requirements.txt
+  - setup.py
+
+# copy file description 
+copyFile:
+  - file:
+      filename: main.py
+      path: .
+  - dirs:
+      dirname: util
+      path: src
