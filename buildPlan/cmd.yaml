@@ -1,0 +1,7 @@
+mainprocess:
+  - "info"
+  - "get_yaml_data"
+  - "createFun"
+#  - "copyFile"
+#  - "BuildProject"
+#  - "write_file"

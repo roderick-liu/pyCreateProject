@@ -1,0 +1,37 @@
+main_process:
+  - reflex:
+      - "info"
+      - "create_Function":
+        - data1
+      - "copy_File":
+        - data1
+  - data:
+      # create file array
+      dir_Array:
+        - contributed
+        - data
+        - module
+        - src
+        - doc
+        - log
+
+      child_Array:
+        - test
+        - tmp
+        - module
+
+      file_Array:
+        - __init__.py
+        - LICENSE.md
+        - README.md
+        - requirements.txt
+        - setup.py
+
+      # copy file description 
+      copy_File:
+        - file:
+            filename: main.py
+            path: ''
+        - dirs:
+            dir_name: util
+            path: src

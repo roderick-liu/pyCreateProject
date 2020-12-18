@@ -20,27 +20,33 @@ def get_yaml_data(yaml_file):
 
     # 将字符串转化为字典或列表
     print("***转化yaml数据为字典或列表***")
-    data = yaml.load(file_data)
+    data = yaml.safe_load(file_data)
     print(data)
     print("类型：", type(data))
     return data
 
-current_path=os.path.abspath(".")
-yaml_path=os.path.join(current_path,"buildPlan.yaml")
+current_path=os.path.abspath("/home/data/pyworkspace/pyCreateProject/projectConfigure/")
+yaml_path=os.path.join(current_path, "cmd.yaml")
 print('--------------------',yaml_path)
-get_yaml_data(yaml_path)
+savedata = get_yaml_data(yaml_path)
+
+# reflex
+collection = savedata.get("mainprocess")
+for var in collection:
+    print(var)
+
 
 
 # yaml文件中含多个文档时，分别获取文档中数据
-def get_yaml_load_all(yaml_file):
-    #打开文件
-    file=open(yaml_file,'r',encoding='utf-8')
-    file_data=file.read()
-    file.close()
+# def get_yaml_load_all(yaml_file):
+#     #打开文件
+#     file=open(yaml_file,'r',encoding='utf-8')
+#     file_data=file.read()
+#     file.close()
 
-    all_data=yaml.load_all(file_data,Loader=yaml.FullLoader)
-    for data in all_data:
-        print('data-----',data)
+#     all_data=yaml.load_all(file_data,Loader=yaml.FullLoader)
+#     for data in all_data:
+        # print('data-----',data)
 
 # current_path=os.path.abspath(".")
 # yaml_path=os.path.join(current_path,"configall.yaml")
@@ -48,12 +54,12 @@ def get_yaml_load_all(yaml_file):
 
 
 #生成yaml文档
-def generate_yaml_doc(yaml_file):
-    py_ob={"school":"zhang",
-           "students":['a','b']}
-    file=open(yaml_file,'w',encoding='utf-8')
-    yaml.dump(py_ob,file)
-    file.close()
+# def generate_yaml_doc(yaml_file):
+    # py_ob={"school":"zhang",
+    #        "students":['a','b']}
+    # file=open(yaml_file,'w',encoding='utf-8')
+    # yaml.dump(py_ob,file)
+    # file.close()
 
 # current_path=os.path.abspath(".")
 # yaml_path=os.path.join(current_path,"generate.yaml")

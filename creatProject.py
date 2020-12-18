@@ -1,126 +1,98 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 import os
-import logging
 import sys
-import shutil
-import yaml
+import fire
+import src.MyLog as mylog
+import src.controler as control
 
-# project template files directory
-ptdir = "projectTemplateFile"
-
-logging.basicConfig(level = logging.INFO,format =
-                    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-logger = logging.getLogger(__name__)
 basedir = os.getcwd()
+log = mylog.get_log()
 
 
-def get_yaml_data(yaml_file):
-    """
-    read yaml
-    """
-    # 打开yaml文件
-    #print("***获取yaml文件数据***")
-    file = open(yaml_file, 'r', encoding="utf-8")
-    file_data = file.read()
-    file.close()
+class Comands(object):
+    """Main commands ...."""
+    def init(self, projectName, buildPlan):
+        """ List data dir ...."""
+        # projectName = sys.argv[3]
+        # buildPlan = sys.argv[2]
+        con = control.Controler(basedir, projectName)
 
-    # print(file_data)
-    # print("类型：", type(file_data))
+        log.info('-----------load buildPlan.yaml------------')
+        if buildPlan == "cc":
+            planfile = "cc_plan.yaml"
 
-    # 将字符串转化为字典或列表
-    print("***转化yaml数据为字典或列表***")
-    data = yaml.safe_load(file_data)
-    print(data)
-    print("类型：", type(data))
-    return data
+        if buildPlan == "py":
+            planfile = "py_plan.yaml"
 
+        if buildPlan == "golang":
+            planfile = "go_plan.yaml"
 
-def info():
-    # display information
-    print('To create project template: createProject your projectname')
-    print('It consist file:')
-    print('dir: contributed,data,modle,src,test,tmp,util')
-    print('files:__init__.py,LICENSE.md,README.md,\
-    requirements.txt,setup.py,main.py')
+        data = con.get_yaml_data(basedir + "/" + control.Ptdir + "/" + "py_plan.yaml")
 
+        # reflex
+        collection = data.get("main_process")
+        reflex_data = collection[0]
+        data1 = collection[1]
+        # print(str(reflex_data.get("reflex")))
+        for var in reflex_data.get("reflex"):
+            res = str(type(var))
+            # print(type(var))
+            try:
+                if res=="<class 'str'>":
+                    command_act = getattr(con, var)
+                    command_act()
 
-# create function
-def createFun(projectname, data):
-    os.mkdir(projectname)
-    logger.info('create project dir: ' + projectname)
+                if res=="<class 'dict'>":
+                    key = list(var.keys())[0]
+                    # print("key is:", key)
+                    command_act = getattr(con, key)
+                    # print(var.get(key).__len__())
+                    if var.get(key).__len__() ==1:
+                        # print(type(var.get(key)[0]))
+                        # print(var.get(key)[0])
+                        # print(data1.get("data"))
+                        if var.get(key)[0] == "data1":
+                            command_act(data1.get("data"))
+                            # print("key is 1")
 
-    os.chdir(projectname)
-    print("chdir: " + os.getcwd())
-    # setup git
-    setupGit()
+                    if var.get(key).__len__() ==2:
+                        if var.get(key)[0] == "data1" and var.get(key)[1] == "projectName":
+                            command_act(data1.get("data"), projectName)
+                            # print("key is 2")
+            except TypeError:
+                try:
+                    print("TypeError")
+                except TypeError:
+                    print("worng")
 
-    for i in data.get("dirArray"):
-        os.mkdir(i)
-        logger.info('create subdir ' + str(i))
+    def tarin(self):
+        """
+        print tarin process
+        """
+        log.info("tarin process .....")
 
-    for j in data.get("fileArray"):
-        res = open(j ,'a')
-        res.close()
-        logger.info('create files' + str(j))
+    def result(self):
+        """
+        print result
+        """
+    def score(self):
+        """
+        print score
+        """
 
-    # create childarray of src
-    os.chdir('src')
-    print("chdir: " + os.getcwd())
-    for l in data.get("childArray"):
-        os.mkdir(l)
-        logging.info('create subdir' + str(l))
+    def log(self):
+        """
+        print current log
+        """
+        os.chdir("logs")
+        log.info("logs....")
 
-
-def copyFile(data, target):
-    """
-    copy project Template File and directory to project directory
-    """
-    source = basedir + "/" + ptdir + "/"
-    targetPath = basedir + "/" + target
-    # copy file
-    try:
-        shutil.copy(source + data.get("copyFile")[0].get("file").get("filename"),targetPath + "/" + data.get("copyFile")[0].get("file").get("path"))
-    except IOError as e:
-        logger.error("Unable to copy file. %s" % e)
-        exit(1)
-    except:
-        logger.error("Unexpected error:", sys.exc_info())
-        exit(1)
-
-    # copy directory
-    dirname = data.get("copyFile")[1].get("dirs").get("dirname")
-    path = data.get("copyFile")[1].get("dirs").get("path")
-    try:
-        shutil.copytree(source +dirname, targetPath + "/" + path + "/" + dirname)
-    except IOError as e:
-        logger.error("Unable to copy directory. %s" % e)
-        exit(1)
-    except:
-        logger.error("Unexpected error:", sys.exc_info())
-        exit(1)
-
-    logger.info("File copy done!")
-
-
-def setupGit():
-    # setup git
-    res = os.system("git init")
-    if res != 0:
-        print("run 'git init' failed")
+    def test(self):
+        """
+        test process
+        """
 
 
 if __name__ == '__main__':
-    projectName = sys.argv[1]
-    logger.info('-----------print information of system----')
-    info()
-
-    logger.info('-----------load buildPlan.yaml------------')
-    data = get_yaml_data(basedir + "/" + ptdir + "/" + "buildPlan.yaml")
-    print(data.get("copyFile")[0].get("file").get("path"))
-
-    logger.info('-----------create directory---------------')
-    createFun(projectName, data)
-
-    logger.info('------------copy file---------------------')
-    copyFile(data, projectName)
+    fire.Fire(Comands)

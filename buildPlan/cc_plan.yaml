@@ -11,7 +11,6 @@ childArray:
   - test
   - tmp
   - module
-  - util
 
 fileArray:
   - __init__.py
@@ -25,8 +24,20 @@ fileArray:
 # copy file description 
 copyFile:
   - file:
-      filename: main.py
+      filename: main.cc
       path: .
   - dirs:
       dirname: util
       path: src
+
+#build project
+buildProj:
+  - compile: "bazel build main"
+  - run: "./bazel-bin/main"
+
+#run test
+
+# write build file
+writeBuildFile:
+  - workspace: WORKSPACE.DTL
+  - build: BUILD.DTL
